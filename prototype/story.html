@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Story Image</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Figtree:wght@400..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* 1080 x 1920 Instagram story. Instagram covers the top 250px (profile bar) and the bottom 250px (reply bar),
+     so no text sits there. The strap may run through the top band because its words only repeat the wordmark. */
+  html, body { margin: 0; background: #2a2a27; }
+  body { min-height: 100svh; display: grid; place-items: center; overflow: hidden; }
+  .story {
+    --ground: #c6f432;            /* the punched slot shows the field behind the badge */
+    --head: 0px;
+    --bw: 620px;
+    --strap: 336px;
+    width: 1080px; height: 1920px; flex: none;
+    background: #c6f432; color: #121211;
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column; align-items: center;
+    transform-origin: 50% 50%;
+  }
+  .story .hang { margin-top: 0; }
+  .story .strap { background: #121211; }
+  .story .strap span { color: #c6f432; font-size: 30px; padding-bottom: 24px; word-spacing: 6px; }
+  .story .badge { box-shadow: 0 2px 2px rgba(0,0,0,.08), 0 50px 80px -40px rgba(0,0,0,.55); /* taste-skill-ignore: same hanging badge shadow as the app */ cursor: default; }
+  .q {
+    margin: 56px 0 0; text-align: center;
+    font: 800 108px/1 var(--display); font-stretch: 112%; letter-spacing: -0.01em;
+  }
+  .down { margin-top: 36px; width: 84px; height: 84px; stroke: #121211; stroke-width: 2.6; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  /* guides, visible only in preview with ?guides=1 */
+  .safe { position: absolute; left: 0; right: 0; height: 250px; background: rgba(255,0,80,.18); display: none; }
+  .safe.top { top: 0; } .safe.bottom { bottom: 0; }
+  .guides .safe { display: block; }
+  html.export, html.export body { background: #c6f432; overflow: hidden; }
+  html.export body { display: block; min-height: 0; }
+</style>
+</head>
+<body>
+<div class="story" id="story">
+  <div class="hang" id="hang"></div>
+  <p class="q">Would you<br>hire me?</p>
+  <svg class="down" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16"/><path d="m5 13 7 7 7-7"/></svg>
+  <div class="safe top"></div><div class="safe bottom"></div>
+</div>
+<script src="card.js"></script>
+<script>
+  const qs = new URLSearchParams(location.search);
+  const hang = document.getElementById("hang");
+  hang.dataset.card = CARDS[qs.get("card")] ? qs.get("card") : "devon";
+  mountHang(hang);
+  const story = document.getElementById("story");
+  if (qs.get("guides")) story.classList.add("guides");
+  // ?export=1 renders the exact 1080x1920 frame for Puppeteer. ?embed=1 is the share sheet thumbnail.
+  if (qs.get("export") || qs.get("embed")) {
+    document.documentElement.classList.add("export");
+  } else {
+    const fit = () => (story.style.transform = `scale(${Math.min(innerWidth / 1080, innerHeight / 1920)})`);
+    fit(); addEventListener("resize", fit);
+  }
+</script>
+</body>
+</html>

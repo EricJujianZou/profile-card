@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Link Preview Image</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Figtree:wght@400..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* 1200 x 627 link preview for LinkedIn, iMessage and X. Text stays inside 1100 x 560 so a centre crop keeps it. */
+  html, body { margin: 0; background: #2a2a27; }
+  body { min-height: 100svh; display: grid; place-items: center; overflow: hidden; }
+  .og {
+    --ground: #c6f432;
+    --head: 0px;
+    --bw: 360px;
+    --strap: 70px;
+    width: 1200px; height: 627px; flex: none;
+    display: grid; grid-template-columns: 1fr 520px;
+    background: #f1f0eb; color: #121211; overflow: hidden;
+  }
+  .left { padding: 64px 0 56px 72px; display: flex; flex-direction: column; }
+  .mark { font-size: 26px; }
+  .q { margin: auto 0 0; font: 800 88px/0.98 var(--display); font-stretch: 112%; letter-spacing: -0.01em; }
+  .url { margin-top: 28px; font: 600 26px/1 var(--body); color: #4b4b46; }
+  .right { background: #c6f432; display: flex; justify-content: center; }
+  .og .hang { margin-top: 0; }
+  .og .strap { background: #121211; }
+  .og .strap span { color: #c6f432; font-size: 18px; padding-bottom: 14px; }
+  .og .badge { box-shadow: 0 2px 2px rgba(0,0,0,.08), 0 40px 60px -34px rgba(0,0,0,.5); /* taste-skill-ignore: same hanging badge shadow as the app */ cursor: default; }
+  html.export, html.export body { background: #f1f0eb; }
+  html.export body { display: block; min-height: 0; }
+</style>
+</head>
+<body>
+<div class="og" id="og">
+  <div class="left">
+    <span class="mark">hire or pass</span>
+    <p class="q" id="q"></p>
+    <p class="url" id="url"></p>
+  </div>
+  <div class="right"><div class="hang" id="hang"></div></div>
+</div>
+<script src="card.js"></script>
+<script>
+  const qs = new URLSearchParams(location.search);
+  const key = CARDS[qs.get("card")] ? qs.get("card") : "devon";
+  const c = CARDS[key];
+  const hang = document.getElementById("hang");
+  hang.dataset.card = key;
+  mountHang(hang);
+  document.getElementById("q").innerHTML = `Would you<br>hire ${c.name.split(" ")[0]}?`;
+  document.getElementById("url").textContent = c.link;
+  const og = document.getElementById("og");
+  if (qs.get("export")) document.documentElement.classList.add("export");
+  else {
+    const fit = () => (og.style.transform = `scale(${Math.min(1, innerWidth / 1200, innerHeight / 627)})`);
+    fit(); addEventListener("resize", fit);
+  }
+</script>
+</body>
+</html>
